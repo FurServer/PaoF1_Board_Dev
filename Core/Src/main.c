@@ -282,16 +282,16 @@ int main(void)
     /* USER CODE BEGIN 3 */
         // 用户代码 ===================================================
 
-        if (trigger_60 >= 2)
-        {
-            // uint32_t volt = median_lowpass(&adc_filter_V, adc_dma_buffer[1]);
-            // volt = volt * 1000 * 5 * 3.3 / 4096;
-            // uint8_t len = sprintf((char*)tx_buffer, "\033[96m%02d.%03"
-            //                                         "dV\033[0m %d\r\n", volt / 1000, volt % 1000, adc_dma_buffer[1]);
-            // HAL_UART_Transmit_DMA(&huart1, tx_buffer, len);
-
-            trigger_60 = 0;
-        }
+        // if (trigger_60 >= 2)
+        // {
+        //     // uint32_t volt = median_lowpass(&adc_filter_V, adc_dma_buffer[1]);
+        //     // volt = volt * 1000 * 5 * 3.3 / 4096;
+        //     // uint8_t len = sprintf((char*)tx_buffer, "\033[96m%02d.%03"
+        //     //                                         "dV\033[0m %d\r\n", volt / 1000, volt % 1000, adc_dma_buffer[1]);
+        //     // HAL_UART_Transmit_DMA(&huart1, tx_buffer, len);
+        //
+        //     trigger_60 = 0;
+        // }
 
         u8g2_FirstPage(&u8g2);
         do

@@ -61,13 +61,11 @@ uint8_t u8x8_byte_hw_spi_stm32(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void*
         break;
 
     case U8X8_MSG_BYTE_START_TRANSFER:
-        // CS_Select(2);
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+        CS_Select(2);
         break;
 
     case U8X8_MSG_BYTE_END_TRANSFER:
-        // CS_Deselect();
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+        CS_Deselect();
         break;
 
     default:
@@ -87,7 +85,6 @@ uint8_t u8x8_stm32_gpio_and_delay(U8X8_UNUSED u8x8_t* u8x8, U8X8_UNUSED uint8_t 
         HAL_Delay(arg_int);
         break;
     case U8X8_MSG_GPIO_RESET:
-        // arg_int?HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET):HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
         break;
     default:
         return 0;
