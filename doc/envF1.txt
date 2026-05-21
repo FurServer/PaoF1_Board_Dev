@@ -1,0 +1,77 @@
+我正在学习STM32, 现在使用STM32F103C8T6芯片, 使用CubeMX生成代码, Clion编译, 工具链为CubeCLT. 指导我需要在什么位置编写什么的代码.
+
+下面是学习用的开发板的配置, 板子上一些设备共用同一个通讯端口但可使用开关切换,这些前置信息供上下文参考.
+On-board Peripherals:
+Communication:
+ Debuger DapLink
+ WiFi ESP-12F
+ GPS E108-GN03
+ Bluetooth KT6368A
+ NRG24L01 E01-ML01SP2
+Sensor:
+ Current INA226
+ Temperature AHT20
+ Barometer BMP280
+ 3-Axis-Magnetic QMC5883
+ IMU/Gyroscopic BMI270
+Display:
+ RGB-LED WS2812B
+ OLED12864 SSD1315
+ LCD1602/LCD12864 (interface)
+ADC:
+ Current INA199
+ Voltage LMV321
+Others:
+ FLASH 25Qxx
+ Motor drive DRV8870
+ Serial2Parallel PCF8574A
+ LED/BEEP/Rotary-Encoder
+ 
+I2C devices Addr
+0x2C QMC5883
+0x38 AHT20
+0x3F PCF8574
+0x40 INA226
+0x76 BMP280
+
+SPI devices CS
+Y0 BMI270
+Y1 NRF24L01
+Y2 SSD1315
+Y3 25Qxxx
+
+PA0 -> Rotary-Encoder KEY
+PA1 -> Rotary-Encoder A
+PA2 -> Rotary-Encoder B
+PA3 -> LED (Push and pull)
+PA4 -> INA199 (Analog current 2A/V)
+PA5 -> LMV321 (Analog voltage 0.2V/V)
+PA6 -> 74HC138-A (SPI devices CS)
+PA7 -> 74HC138-B
+PB0 -> 74HC138-C
+PB1 -> BEEP (BOOT1)
+PB2 -> 74HC138-G1 (Active high)
+PB10-> UART3-TX (E108-GN03 and ESP-12F)
+PB11-> UART3-RX     GPS^        WiFi^
+PB12-> LCD1602/LCD12864 RW
+PB13-> LCD1602/LCD12864 E
+PB14-> DRV8870 Reversal (PWM)
+PB15-  DRV8870 Forward (PWM)
+PA8 -> WS2812B *24
+PA9 -  UART3-TX (DapLink KT6368A)
+PA10-> UART3-RX  Debuger   BT
+PA11-  USB-DM/CAN-RX
+PA12-> USB-DP/CAN-TX
+PA13-  SWDIO
+PA14-  SWCLK
+PA15-> LCD/OLED DC(RS)
+PB3 -  SPI1-SCK
+PB4 -> SPI1-MISO
+PB5 -  SPI1-MOSI
+PB6 -> NRF24L01-CE
+PB7 -  NRF24L01-IRQ
+PB8 -  I2C1-SCL
+PB9 -  I2C1-SDA
+PC13-  BMI270-INT
+PC14-> OSC32
+PC15-> OSC32
