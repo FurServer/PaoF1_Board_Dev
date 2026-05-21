@@ -244,11 +244,15 @@ int main(void)
   MX_TIM1_Init();
   MX_USART1_UART_Init();
   MX_CAN_Init();
-  MX_I2C1_Init();
+  // MX_I2C1_Init();
   MX_SPI1_Init();
   MX_RTC_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+  // ######## 当I2C1初始化时, SPI1重映射无法使用 ########
+  // ######## 当I2C1初始化时, SPI1重映射无法使用 ########
+  // ######## 当I2C1初始化时, SPI1重映射无法使用 ########
+
     // 应用初始化
 
     // 定时器中断
@@ -479,6 +483,12 @@ static void MX_I2C1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN I2C1_Init 2 */
+
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE END I2C1_Init 2 */
 

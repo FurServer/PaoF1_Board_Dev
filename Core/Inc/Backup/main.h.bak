@@ -90,6 +90,10 @@ void Error_Handler(void);
 #define rgb_GPIO_Port GPIOA
 #define lcdDC_Pin GPIO_PIN_15
 #define lcdDC_GPIO_Port GPIOA
+#define nrfCE_Pin GPIO_PIN_6
+#define nrfCE_GPIO_Port GPIOB
+#define nrfIRQ_Pin GPIO_PIN_7
+#define nrfIRQ_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
