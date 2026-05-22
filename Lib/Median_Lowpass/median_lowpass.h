@@ -21,9 +21,9 @@ typedef struct {
  * @param   alpha     低通系数，0~1，越小越平滑
  *
  */
-#define MEDIAN_LP_DEFINE(name, n, alpha)                  \
-  int32_t name##_buf[n] = {0};                            \
-  median_lp_t name = {                                    \
+#define MEDIAN_LP_DEFINE(name, n, alpha)                    \
+    int32_t name##_buf[n] = {0};                            \
+    median_lp_t name = {                                    \
     .median_n = n, .lp_alpha = alpha, .raw_buf = name##_buf }
 
 /**

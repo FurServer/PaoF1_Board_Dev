@@ -1,5 +1,5 @@
-#ifndef PAOC1_I2C_SCANNER_H
-#define PAOC1_I2C_SCANNER_H
+#ifndef I2C_SCANNER_H
+#define I2C_SCANNER_H
 
 #include "main.h"
 
@@ -60,4 +60,4 @@ void I2C_Scan_Print_UART(I2C_ScanResult_t *result, UART_HandleTypeDef *huart, ui
  */
 void I2C_Scan_ClearResult(I2C_ScanResult_t *result);
 
-#endif //PAOC1_I2C_SCANNER_H
+#endif

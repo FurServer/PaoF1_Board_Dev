@@ -1,5 +1,5 @@
-#ifndef PAOC1_UART_LED_H
-#define PAOC1_UART_LED_H
+#ifndef UART_LED_H
+#define UART_LED_H
 
 #include "main.h"
 
@@ -22,4 +22,4 @@
  */
 void UART_GPIO_Indicator(UART_HandleTypeDef* huart, GPIO_TypeDef* GPIOx, uint16_t Pin, uint8_t Dir, uint8_t Pol);
 
-#endif //PAOC1_UART_LED_H
+#endif

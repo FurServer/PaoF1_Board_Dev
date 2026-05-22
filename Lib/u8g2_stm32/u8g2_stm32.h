@@ -1,5 +1,5 @@
-#ifndef PAOC1_U8G2_STM32_H
-#define PAOC1_U8G2_STM32_H
+#ifndef U8G2_STM32_H
+#define U8G2_STM32_H
 
 #include <stdint.h>
 #include "u8x8.h"
@@ -16,4 +16,4 @@ void u8g2Init(u8g2_t* u8g2);
 void draw_u8g2_example(u8g2_t* u8g2);
 
 
-#endif //PAOC1_U8G2_STM32_H
+#endif

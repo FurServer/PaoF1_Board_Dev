@@ -1,5 +1,5 @@
-#ifndef PAOF1_PRINTF_H
-#define PAOF1_PRINTF_H
+#ifndef PRINTF_H
+#define PRINTF_H
 
 #include "main.h"
 
@@ -15,4 +15,4 @@ PUTCHAR_PROTOTYPE
     return ch;
 }
 
-#endif //PAOF1_PRINTF_H
+#endif

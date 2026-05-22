@@ -1,5 +1,5 @@
-#ifndef PAOF1_FUNCTION_H
-#define PAOF1_FUNCTION_H
+#ifndef FUNCTION_H
+#define FUNCTION_H
 
 #include "main.h"
 #include <stdio.h>
@@ -21,4 +21,4 @@ void CS_Select(uint8_t cs);
 void CS_Deselect(void);
 
 
-#endif //PAOF1_FUNCTION_H
+#endif

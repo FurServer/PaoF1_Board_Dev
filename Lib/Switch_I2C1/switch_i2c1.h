@@ -1,5 +1,5 @@
-#ifndef PAOF1_SWITCH_I2C1_H
-#define PAOF1_SWITCH_I2C1_H
+#ifndef SWITCH_I2C1_H
+#define SWITCH_I2C1_H
 
 #include <stdint.h>
 #include "main.h"
