@@ -25,9 +25,9 @@ char shellBuffer[512];
  * 
  * @return short 实际写入的数据长度
  */
-short userShellWrite(char *data, unsigned short len)
+short userShellWrite(char* data, unsigned short len)
 {
-    HAL_UART_Transmit(&huart1,(uint8_t*)data,len,1000);
+    HAL_UART_Transmit(&huart1, (uint8_t*)data, len, 1000);
     return len;
 }
 
@@ -40,7 +40,7 @@ short userShellWrite(char *data, unsigned short len)
  *
  * @return short 实际读取到
  */
-short userShellRead(char *data, unsigned short len)
+short userShellRead(char* data, unsigned short len)
 {
     (void)data;
     (void)len;
@@ -54,7 +54,7 @@ short userShellRead(char *data, unsigned short len)
  *
  * @return int 0
  */
-int userShellLock(Shell *shell)
+int userShellLock(Shell* shell)
 {
     (void)shell;
     return 0;
@@ -67,7 +67,7 @@ int userShellLock(Shell *shell)
  *
  * @return int 0
  */
-int userShellUnlock(Shell *shell)
+int userShellUnlock(Shell* shell)
 {
     (void)shell;
     return 0;

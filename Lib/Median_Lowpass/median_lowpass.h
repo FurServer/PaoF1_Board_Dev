@@ -3,13 +3,14 @@
 
 #include "main.h"
 
-typedef struct {
-  uint8_t  median_n;     // 中位值窗口，建议5~9的奇数
-  float    lp_alpha;     // 低通系数，0~1，越小越平滑
-  float    last_output;  // 低通滤波器的上次输出
-  int32_t *raw_buf;      // 指向内部缓冲区
-  uint8_t  buf_index;    // 环形指针
-  uint8_t  buf_filled;   // 首次填满
+typedef struct
+{
+    uint8_t median_n; // 中位值窗口，建议5~9的奇数
+    float lp_alpha; // 低通系数，0~1，越小越平滑
+    float last_output; // 低通滤波器的上次输出
+    int32_t* raw_buf; // 指向内部缓冲区
+    uint8_t buf_index; // 环形指针
+    uint8_t buf_filled; // 首次填满
 } median_lp_t;
 
 
@@ -42,7 +43,7 @@ typedef struct {
  * median_lp_init(&filter, n, x.xxf, buf);
  * @endcode
  */
-void median_lp_init(median_lp_t *filter, uint8_t median_n, float lp_alpha, int32_t *buf);
+void median_lp_init(median_lp_t* filter, uint8_t median_n, float lp_alpha, int32_t* buf);
 
 /**
  * @brief 中位值低通滤波（去极值平均 + 一阶低通）
@@ -56,6 +57,6 @@ void median_lp_init(median_lp_t *filter, uint8_t median_n, float lp_alpha, int32
  *          运行时初始化可使用 median_lp_init()\n
  *          缓冲区未满时会直接返回原始值
  */
-int32_t median_lowpass(median_lp_t *filter, int32_t new_raw);
+int32_t median_lowpass(median_lp_t* filter, int32_t new_raw);
 
 #endif

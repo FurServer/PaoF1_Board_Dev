@@ -4,16 +4,18 @@
 #include "main.h"
 
 // 设备信息结构体
-typedef struct {
-  uint8_t address;
-  const char *name;
-  const char *description;
+typedef struct
+{
+    uint8_t address;
+    const char* name;
+    const char* description;
 } I2C_DeviceInfo_t;
 
 // 扫描结果结构体
-typedef struct {
-  uint8_t addresses[128]; // 存储检测到的设备地址
-  uint8_t count; // 检测到的设备数量
+typedef struct
+{
+    uint8_t addresses[128]; // 存储检测到的设备地址
+    uint8_t count; // 检测到的设备数量
 } I2C_ScanResult_t;
 
 #define I2C_SCANN_TRIALS 2 // 扫描尝试次数
@@ -34,7 +36,7 @@ typedef struct {
  *          I2C_ScanResult_t result = {0};\n
  *          阻塞式函数
  */
-void I2C_Scan_Device(I2C_HandleTypeDef *hi2c, I2C_ScanResult_t *result);
+void I2C_Scan_Device(I2C_HandleTypeDef* hi2c, I2C_ScanResult_t* result);
 
 /**
  * @brief 将I2C总线设备数扫描结果打印到串口
@@ -47,7 +49,7 @@ void I2C_Scan_Device(I2C_HandleTypeDef *hi2c, I2C_ScanResult_t *result);
  *
  * @note    阻塞式函数
  */
-void I2C_Scan_Print_UART(I2C_ScanResult_t *result, UART_HandleTypeDef *huart, uint32_t timeout);
+void I2C_Scan_Print_UART(I2C_ScanResult_t* result, UART_HandleTypeDef* huart, uint32_t timeout);
 
 /**
  * @brief 清空I2C总线设备数扫描结果
@@ -58,6 +60,6 @@ void I2C_Scan_Print_UART(I2C_ScanResult_t *result, UART_HandleTypeDef *huart, ui
  *
  * @note    阻塞式函数
  */
-void I2C_Scan_ClearResult(I2C_ScanResult_t *result);
+void I2C_Scan_ClearResult(I2C_ScanResult_t* result);
 
 #endif

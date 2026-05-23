@@ -10,9 +10,9 @@ typedef enum
 {
     I2C1_OFF = 0u,
     I2C1_ON
-  } I2C1_State;
+} I2C1_State;
 
 void switch_i2c1(uint8_t stat);
 
 
-#endif //PAOF1_SWITCH_I2C1_H
+#endif
