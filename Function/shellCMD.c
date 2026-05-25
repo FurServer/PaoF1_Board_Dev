@@ -6,9 +6,9 @@ int scan_i2c_cmd(int argc, char* argv[])
 {
     printf("\033[36m\033[1mScanning I2C device...\033[0m\r\n");
     I2C_ScanResult_t result = {0};
-    switch_i2c1(I2C1_ON);
+    Switch_I2C1(I2C1_ON);
     I2C_Scan_Device(&hi2c1, &result);
-    switch_i2c1(I2C1_OFF);
+    Switch_I2C1(I2C1_OFF);
     I2C_Scan_Print_UART(&result, &huart1, HAL_MAX_DELAY);
 }
 

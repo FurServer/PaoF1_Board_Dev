@@ -1,6 +1,6 @@
 #include "switch_i2c1.h"
 
-void switch_i2c1(uint8_t stat)
+void Switch_I2C1(uint8_t stat)
 {
     if (stat)
     {

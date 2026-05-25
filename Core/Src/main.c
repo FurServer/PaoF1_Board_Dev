@@ -86,6 +86,7 @@ void SystemClock_Config(void);
 #include "u8g2.h"
 #include "u8g2_stm32.h"
 #include "switch_i2c1.h"
+#include "simple_key.h"
 
 #define TX_BUFFER_SIZE 64
 #define RX_BUFFER_SIZE 64
@@ -119,6 +120,9 @@ u8g2_t u8g2;
 // AHT20
 int16_t temperature;
 uint16_t humidity;
+
+// key
+Key_t key;
 
 
 // 定时器中断
@@ -204,7 +208,7 @@ int main(void)
     /* USER CODE BEGIN 2 */
 
     // 应用初始化
-    switch_i2c1(0);
+    Switch_I2C1(0);
 
     // 定时器中断
     HAL_TIM_Base_Start_IT(&htim2);
@@ -221,10 +225,13 @@ int main(void)
     MEDIAN_LP_DEFINE(adc_filter_A, 7, 0.10f);
     MEDIAN_LP_DEFINE(adc_filter_V, 7, 0.10f);
 
+    // 按键
+    Key_Init(&key, GPIOA, GPIO_PIN_0, 0, 50);
+
     // 初始化 shell
     userShellInit();
 
-    u8g2Init(&u8g2);
+    // u8g2Init(&u8g2);
 
     /* USER CODE END 2 */
 
@@ -237,43 +244,13 @@ int main(void)
         /* USER CODE BEGIN 3 */
         // 用户代码 ===================================================
 
-        // if (trigger_60 >= 2)
-        // {
-        //     // uint32_t volt = median_lowpass(&adc_filter_V, adc_dma_buffer[1]);
-        //     // volt = volt * 1000 * 5 * 3.3 / 4096;
-        //     // uint8_t len = sprintf((char*)tx_buffer, "\033[96m%02d.%03"
-        //     //                                         "dV\033[0m %d\r\n", volt / 1000, volt % 1000, adc_dma_buffer[1]);
-        //     // HAL_UART_Transmit_DMA(&huart1, tx_buffer, len);
-        //
-        //     trigger_60 = 0;
-        // }
-
-        switch_i2c1(I2C1_ON);
-        AHT20_Measure(&hi2c1);
-        HAL_Delay(80);
-        AHT20_Get_Data(&hi2c1,&temperature,&humidity);
-        switch_i2c1(I2C1_OFF);
-        temperature = median_lowpass(&adc_filter_A,temperature);
-        humidity = median_lowpass(&adc_filter_V,humidity);
-        sprintf((char*)tx_buffer,"T:%02d.%02d°C",temperature/100,temperature%100);
-        sprintf((char*)rx_buffer,"R:%02d.%02d%%",humidity/100,humidity%100);
-
-
-        u8g2_FirstPage(&u8g2);
-        do
+        if (trigger_60 >= 1)
         {
-            u8g2_SetFontMode(&u8g2, 1);
-            u8g2_SetFontDirection(&u8g2, 0);
-            u8g2_SetFont(&u8g2, u8g2_font_t0_16_mr);
-            u8g2_DrawStr(&u8g2, 0, 10, tx_buffer);
-            u8g2_DrawStr(&u8g2, 0, 24, rx_buffer);
 
+            trigger_60 = 0;
         }
-        while (u8g2_NextPage(&u8g2));
 
 
-
-        // UART_GPIO_Indicator(&huart1, LED_GPIO_Port, LED_Pin, 0, 0);
 
 
         // 用户代码 ===================================================
