@@ -33,7 +33,7 @@ uint8_t u8x8_byte_hw_i2c_stm32(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void*
 
     case U8X8_MSG_BYTE_END_TRANSFER:
         {
-            if (HAL_I2C_Master_Transmit(&hi2c1, 0x3C << 1, buffer, buf_idx, 1000) != HAL_OK)
+            if (HAL_I2C_Master_Transmit(&hi2c1, 0x3C << 1, buffer, buf_idx, 100) != HAL_OK)
                 return 0;
         }
         break;
