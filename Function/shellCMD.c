@@ -2,6 +2,7 @@
 #include "switch_i2c1.h"
 
 // 扫描I2C设备
+// I2C总线状态必须正常, 不得启用HAL_Delay
 int scan_i2c_cmd(int argc, char* argv[])
 {
     printf("\033[36m\033[1mScanning I2C device...\033[0m\r\n");
