@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "u8x8.h"
 #include "u8g2.h"
-#include "function.h"
+#include "stm32f1xx_hal.h"
 
 extern I2C_HandleTypeDef hi2c1;
 extern SPI_HandleTypeDef hspi1;

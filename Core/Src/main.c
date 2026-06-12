@@ -124,6 +124,12 @@ uint16_t humidity;
 // key
 Key_t key;
 
+// data
+int8_t data1[32] = {0};
+int8_t data2[32] = {0};
+int8_t data3[32] = {0};
+int8_t data4[32] = {0};
+
 
 // 定时器中断
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
@@ -231,7 +237,7 @@ int main(void)
     // 初始化 shell
     userShellInit();
 
-    // u8g2Init(&u8g2);
+    u8g2Init(&u8g2);
 
     /* USER CODE END 2 */
 
@@ -250,7 +256,28 @@ int main(void)
             trigger_60 = 0;
         }
 
+        Switch_I2C1(I2C1_ON);
+        AHT20_Measure(&hi2c1);
+        HAL_Delay(80);
+        AHT20_Get_Data(&hi2c1,&temperature,&humidity);
+        Switch_I2C1(I2C1_OFF);
+        temperature = median_lowpass(&adc_filter_A,temperature);
+        humidity = median_lowpass(&adc_filter_V,humidity);
+        sprintf((char*)data1,"T:%02d.%02d°C",temperature/100,temperature%100);
+        sprintf((char*)data2,"R:%02d.%02d%%",humidity/100,humidity%100);
 
+
+        u8g2_FirstPage(&u8g2);
+        do
+        {
+            u8g2_SetFontMode(&u8g2, 1);
+            u8g2_SetFontDirection(&u8g2, 0);
+            u8g2_SetFont(&u8g2, u8g2_font_t0_16_mr);
+            u8g2_DrawStr(&u8g2, 0, 10, data1);
+            u8g2_DrawStr(&u8g2, 0, 24, data2);
+
+        }
+        while (u8g2_NextPage(&u8g2));
 
 
         // 用户代码 ===================================================
