@@ -1,6 +1,6 @@
 #include "u8g2_stm32.h"
 
-uint8_t u8x8_byte_hw_i2c_stm32(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void* arg_ptr)
+uint8_t u8x8_byte_stm32_hw_i2c(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void* arg_ptr)
 {
     /* u8g2/u8x8 will never send more than 32 bytes between START_TRANSFER and END_TRANSFER */
     static uint8_t buffer[128];
@@ -45,7 +45,7 @@ uint8_t u8x8_byte_hw_i2c_stm32(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void*
     return 1;
 }
 
-uint8_t u8x8_byte_hw_spi_stm32(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void* arg_ptr)
+uint8_t u8x8_byte_stm32_hw_spi(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void* arg_ptr)
 {
     switch (msg)
     {
@@ -92,20 +92,32 @@ uint8_t u8x8_stm32_gpio_and_delay(U8X8_UNUSED u8x8_t* u8x8, U8X8_UNUSED uint8_t 
     return 1;
 }
 
-void u8g2Init(u8g2_t* u8g2)
+/********************************************
+U8G2_R0     //不旋转，不镜像
+U8G2_R1     //旋转90度
+U8G2_R2     //旋转180度
+U8G2_R3     //旋转270度
+U8G2_MIRROR   //没有旋转，横向显示左右镜像
+U8G2_MIRROR_VERTICAL    //没有旋转，竖向显示镜像
+********************************************/
+void u8g2Init_SPI(u8g2_t* u8g2)
 {
-    /********************************************
-    U8G2_R0     //不旋转，不镜像
-    U8G2_R1     //旋转90度
-    U8G2_R2     //旋转180度
-    U8G2_R3     //旋转270度
-    U8G2_MIRROR   //没有旋转，横向显示左右镜像
-    U8G2_MIRROR_VERTICAL    //没有旋转，竖向显示镜像
-    ********************************************/
     u8g2_Setup_ssd1315_128x64_noname_f(
         u8g2,
         U8G2_R2,
-        u8x8_byte_hw_spi_stm32,
+        u8x8_byte_stm32_hw_spi,
+        u8x8_stm32_gpio_and_delay
+    );
+    u8g2_InitDisplay(u8g2);
+    u8g2_SetPowerSave(u8g2, 0);
+}
+
+void u8g2Init_I2C(u8g2_t* u8g2)
+{
+    u8g2_Setup_ssd1315_i2c_128x64_noname_f(
+        u8g2,
+        U8G2_R0,
+        u8x8_byte_stm32_hw_i2c,
         u8x8_stm32_gpio_and_delay
     );
     u8g2_InitDisplay(u8g2);

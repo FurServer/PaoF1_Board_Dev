@@ -237,7 +237,7 @@ int main(void)
     // 初始化 shell
     userShellInit();
 
-    u8g2Init(&u8g2);
+    u8g2Init_SPI(&u8g2);
 
     /* USER CODE END 2 */
 
