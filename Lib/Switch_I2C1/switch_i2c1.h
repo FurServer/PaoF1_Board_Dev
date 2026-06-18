@@ -2,7 +2,7 @@
 #define SWITCH_I2C1_H
 
 #include <stdint.h>
-#include "main.h"
+#include "i2c.h"
 
 extern I2C_HandleTypeDef hi2c1;
 
