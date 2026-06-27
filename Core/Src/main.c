@@ -116,6 +116,7 @@ volatile uint32_t count = 0;
 
 // u8g2
 u8g2_t u8g2;
+char oled[32];
 
 // AHT20
 int16_t temperature;
@@ -129,6 +130,9 @@ int8_t data1[32] = {0};
 int8_t data2[32] = {0};
 int8_t data3[32] = {0};
 int8_t data4[32] = {0};
+
+// user
+uint8_t cnt = 0;
 
 
 // 定时器中断
@@ -250,22 +254,19 @@ int main(void)
         /* USER CODE BEGIN 3 */
         // 用户代码 ===================================================
 
-        if (trigger_60 >= 1)
-        {
-
-            trigger_60 = 0;
-        }
+        // if (trigger_60 >= 1)
+        // {
+        //
+        //     trigger_60 = 0;
+        // }
 
         Switch_I2C1(I2C1_ON);
         AHT20_Measure(&hi2c1);
         HAL_Delay(80);
-        AHT20_Get_Data(&hi2c1,&temperature,&humidity);
+        AHT20_Get_Data(&hi2c1, &temperature, &humidity);
         Switch_I2C1(I2C1_OFF);
-        temperature = median_lowpass(&adc_filter_A,temperature);
-        humidity = median_lowpass(&adc_filter_V,humidity);
-        sprintf((char*)data1,"T:%02d.%02d°C",temperature/100,temperature%100);
-        sprintf((char*)data2,"R:%02d.%02d%%",humidity/100,humidity%100);
-
+        // temperature = median_lowpass(&adc_filter_A, temperature);
+        // humidity = median_lowpass(&adc_filter_V, humidity);
 
         u8g2_FirstPage(&u8g2);
         do
@@ -273,9 +274,10 @@ int main(void)
             u8g2_SetFontMode(&u8g2, 1);
             u8g2_SetFontDirection(&u8g2, 0);
             u8g2_SetFont(&u8g2, u8g2_font_t0_16_mr);
-            u8g2_DrawStr(&u8g2, 0, 10, data1);
-            u8g2_DrawStr(&u8g2, 0, 24, data2);
-
+            sprintf(oled, "T:%02d.%02dC", temperature / 100, temperature % 100);
+            u8g2_DrawStr(&u8g2, 0, 10, oled);
+            sprintf(oled, "R:%02d.%02d%%", humidity / 100, humidity % 100);
+            u8g2_DrawStr(&u8g2, 0, 24, oled);
         }
         while (u8g2_NextPage(&u8g2));
 
