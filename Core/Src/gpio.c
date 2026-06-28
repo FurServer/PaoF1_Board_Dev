@@ -56,7 +56,7 @@ void MX_GPIO_Init(void)
                           |lcdDC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, decoderC_Pin|decoderE_Pin|lcdRW_Pin|lceE_Pin
+  HAL_GPIO_WritePin(GPIOB, decoderC_Pin|decoderE_Pin|lcdRW_Pin|lcdE_Pin
                           |nrfCE_Pin|nrfIRQ_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : bmiINT_Pin */
@@ -90,9 +90,9 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : decoderC_Pin decoderE_Pin lcdRW_Pin lceE_Pin
+  /*Configure GPIO pins : decoderC_Pin decoderE_Pin lcdRW_Pin lcdE_Pin
                            nrfCE_Pin nrfIRQ_Pin */
-  GPIO_InitStruct.Pin = decoderC_Pin|decoderE_Pin|lcdRW_Pin|lceE_Pin
+  GPIO_InitStruct.Pin = decoderC_Pin|decoderE_Pin|lcdRW_Pin|lcdE_Pin
                           |nrfCE_Pin|nrfIRQ_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

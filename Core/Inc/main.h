@@ -82,8 +82,8 @@ void Error_Handler(void);
 #define decoderE_GPIO_Port GPIOB
 #define lcdRW_Pin GPIO_PIN_12
 #define lcdRW_GPIO_Port GPIOB
-#define lceE_Pin GPIO_PIN_13
-#define lceE_GPIO_Port GPIOB
+#define lcdE_Pin GPIO_PIN_13
+#define lcdE_GPIO_Port GPIOB
 #define rgb_Pin GPIO_PIN_8
 #define rgb_GPIO_Port GPIOA
 #define lcdDC_Pin GPIO_PIN_15

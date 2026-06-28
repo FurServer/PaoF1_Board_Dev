@@ -87,6 +87,7 @@ void SystemClock_Config(void);
 #include "u8g2_stm32.h"
 #include "switch_i2c1.h"
 #include "simple_key.h"
+#include "lcd1602_port.h"
 
 #define TX_BUFFER_SIZE 64
 #define RX_BUFFER_SIZE 64
@@ -117,6 +118,10 @@ volatile uint32_t count = 0;
 // u8g2
 u8g2_t u8g2;
 char oled[32];
+
+// LCD1602
+lcd1602_t lcd;
+char lcd_buf[17];
 
 // AHT20
 int16_t temperature;
@@ -243,6 +248,11 @@ int main(void)
 
     u8g2Init_SPI(&u8g2);
 
+    // LCD1602 初始化（PCF8574 I2C 提供 D0~D7, GPIO 控制 RS/RW/E, 8-bit 模式）
+    Switch_I2C1(I2C1_ON);
+    lcd1602_port_init(&lcd);
+    Switch_I2C1(I2C1_OFF);
+
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -264,6 +274,15 @@ int main(void)
         AHT20_Measure(&hi2c1);
         HAL_Delay(80);
         AHT20_Get_Data(&hi2c1, &temperature, &humidity);
+
+        // LCD1602 显示温湿度
+        lcd1602_set_cursor(&lcd, 0, 0);
+        sprintf(lcd_buf, "T:%02d.%02d%cC", temperature / 100, temperature % 100, 0xDF);
+        lcd1602_print(&lcd, lcd_buf);
+        lcd1602_set_cursor(&lcd, 0, 1);
+        sprintf(lcd_buf, "R:%02d.%02d%%", humidity / 100, humidity % 100);
+        lcd1602_print(&lcd, lcd_buf);
+
         Switch_I2C1(I2C1_OFF);
         // temperature = median_lowpass(&adc_filter_A, temperature);
         // humidity = median_lowpass(&adc_filter_V, humidity);
