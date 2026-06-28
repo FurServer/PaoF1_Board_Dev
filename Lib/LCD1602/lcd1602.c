@@ -1,9 +1,6 @@
 /**
  * @file    lcd1602.c
- * @brief   LCD1602 (HD44780) 可移植驱动 —— 纯逻辑层 (u8g2 消息回调风格)
- *
- * @note    所有硬件交互通过 lcd->msg_cb 完成, 不直接访问任何硬件寄存器。
- *          4-bit / 8-bit 差异由本层自行处理, port 层无需关心。
+ * @brief   LCD1602 (HD44780) 驱动
  */
 
 #include "lcd1602.h"
@@ -41,9 +38,7 @@
 #define LCD_DDRAM_ROW2          0x14
 #define LCD_DDRAM_ROW3          0x54
 
-/* ================================================================== */
-/* 内部辅助 —— 全部通过 msg_cb 操作硬件                                    */
-/* ================================================================== */
+
 
 /** @brief 检查 msg_cb 是否有效 */
 static uint8_t lcd_ok(lcd1602_t *lcd)
@@ -52,7 +47,7 @@ static uint8_t lcd_ok(lcd1602_t *lcd)
 }
 
 /**
- * @brief  写一个完整字节到 HD44780 (原子操作)
+ * @brief  写一个完整字节到 HD44780
  * @param  data  8 位数据
  * @param  rs    0=指令, 1=数据
  *
@@ -71,10 +66,12 @@ static void lcd_write_byte(lcd1602_t *lcd, uint8_t data, uint8_t rs)
         lcd->msg_cb(lcd, LCD1602_MSG_WRITE_DATA, data, NULL);
         lcd->msg_cb(lcd, LCD1602_MSG_PULSE_EN, 0, NULL);
     } else {
-        /* 4-bit: 先高 4 位, 再低 4 位 */
-        lcd->msg_cb(lcd, LCD1602_MSG_WRITE_DATA, data >> 4, NULL);
+        /*
+         * 4-bit: 先高 nibble, 再低 nibble
+         */
+        lcd->msg_cb(lcd, LCD1602_MSG_WRITE_DATA, (data >> 4), NULL);
         lcd->msg_cb(lcd, LCD1602_MSG_PULSE_EN, 0, NULL);
-        lcd->msg_cb(lcd, LCD1602_MSG_WRITE_DATA, data & 0x0F, NULL);
+        lcd->msg_cb(lcd, LCD1602_MSG_WRITE_DATA, (data & 0x0F), NULL);
         lcd->msg_cb(lcd, LCD1602_MSG_PULSE_EN, 0, NULL);
     }
 }
@@ -125,6 +122,11 @@ void lcd1602_init(lcd1602_t *lcd)
 {
     if (!lcd_ok(lcd)) return;
 
+    /* 初始化追踪字段 */
+    lcd->col  = 0;
+    lcd->row  = 0;
+    lcd->wrap = 0;  // 默认关闭自动换行
+
     lcd_delay(lcd, 50);  /* 上电稳定 (> 40ms) */
 
     if (lcd->mode == LCD1602_MODE_8BIT) {
@@ -144,10 +146,10 @@ void lcd1602_init(lcd1602_t *lcd)
 
         /* 4-bit 初始化 (HD44780 Figure 23)
          * 前 4 次以 8-bit 接口时序发 nibble，因为 HD44780 还不知道要切 4-bit */
-        lcd_nibble_8bit(lcd, 0x03, 0);  lcd_delay(lcd, 5);
-        lcd_nibble_8bit(lcd, 0x03, 0);  lcd_delay(lcd, 1);
-        lcd_nibble_8bit(lcd, 0x03, 0);  lcd_delay(lcd, 1);
-        lcd_nibble_8bit(lcd, 0x02, 0);  /* 切换为 4-bit 模式 */
+        lcd_nibble_8bit(lcd, 0x30, 0);  lcd_delay(lcd, 5);
+        lcd_nibble_8bit(lcd, 0x30, 0);  lcd_delay(lcd, 1);
+        lcd_nibble_8bit(lcd, 0x30, 0);  lcd_delay(lcd, 1);
+        lcd_nibble_8bit(lcd, 0x20, 0);  /* 切换为 4-bit 模式 */
         lcd_delay(lcd, 1);
 
         /* 之后 HD44780 已进入 4-bit 模式，用 lcd_command 发剩余指令 */
@@ -179,6 +181,8 @@ void lcd1602_clear(lcd1602_t *lcd)
 {
     if (!lcd) return;
     lcd_command(lcd, LCD_CMD_CLEAR);
+    lcd->col = 0;
+    lcd->row = 0;
     lcd_delay(lcd, 2);
 }
 
@@ -186,6 +190,8 @@ void lcd1602_home(lcd1602_t *lcd)
 {
     if (!lcd) return;
     lcd_command(lcd, LCD_CMD_HOME);
+    lcd->col = 0;
+    lcd->row = 0;
     lcd_delay(lcd, 2);
 }
 
@@ -196,6 +202,8 @@ void lcd1602_set_cursor(lcd1602_t *lcd, uint8_t col, uint8_t row)
         LCD_DDRAM_ROW2, LCD_DDRAM_ROW3
     };
     if (!lcd || row >= sizeof(row_offset)) return;
+    lcd->col = col;
+    lcd->row = row;
     lcd_command(lcd, LCD_CMD_DDRAM_ADDR | (row_offset[row] + col));
 }
 
@@ -219,15 +227,46 @@ void lcd1602_blink_off(lcd1602_t *lcd)
 void lcd1602_put_char(lcd1602_t *lcd, char ch)
 {
     if (!lcd) return;
+
+    /* 自动换行检查: 当前行已满 (col >= LCD1602_COLS) */
+    if (lcd->wrap && lcd->col >= LCD1602_COLS) {
+        lcd->col = 0;
+        lcd->row++;
+        /* 如果超出总行数，回到第 0 行 */
+        if (lcd->row >= LCD1602_ROWS) {
+            lcd->row = 0;
+        }
+        lcd1602_set_cursor(lcd, lcd->col, lcd->row);
+    }
+
     lcd_data(lcd, (uint8_t)ch);
+    lcd->col++;
 }
 
 void lcd1602_print(lcd1602_t *lcd, const char *str)
 {
     if (!lcd || !str) return;
-    while (*str && *str != '\n') {
-        lcd_data(lcd, (uint8_t)(*str++));
+
+    while (*str) {
+        if (*str == '\n') {
+            /* 换行: 跳到下一行开头 */
+            lcd->col = 0;
+            lcd->row++;
+            if (lcd->row >= LCD1602_ROWS) {
+                lcd->row = 0;
+            }
+            lcd1602_set_cursor(lcd, lcd->col, lcd->row);
+            str++;
+            continue;
+        }
+        lcd1602_put_char(lcd, *str++);
     }
+}
+
+void lcd1602_set_wrap(lcd1602_t *lcd, uint8_t enable)
+{
+    if (!lcd) return;
+    lcd->wrap = enable ? 1 : 0;
 }
 
 /* ================================================================== */
@@ -258,8 +297,5 @@ void lcd1602_shift_right(lcd1602_t *lcd)
 /* 背光                                                                  */
 /* ================================================================== */
 
-void lcd1602_backlight_on(lcd1602_t *lcd)
-    { if (lcd_ok(lcd)) lcd->msg_cb(lcd, LCD1602_MSG_BACKLIGHT, 1, NULL); }
-
-void lcd1602_backlight_off(lcd1602_t *lcd)
-    { if (lcd_ok(lcd)) lcd->msg_cb(lcd, LCD1602_MSG_BACKLIGHT, 0, NULL); }
+void lcd1602_backlight(lcd1602_t *lcd, uint8_t brightness)
+    { if (lcd_ok(lcd)) lcd->msg_cb(lcd, LCD1602_MSG_BACKLIGHT, brightness, NULL); }
